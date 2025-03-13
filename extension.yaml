@@ -13,3 +13,4 @@ config:
     surfaces:
       - extension-team-configuration
       - extension-top-level-site-configuration
+      - extension-site-deploy
