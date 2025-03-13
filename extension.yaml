@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://sdk.netlify.com/sdk/config-schema.json
 config:
-  slug: netlify-build-sounds-extension
+  slug: 4iu990gq-build-sounds
   name: netlify-build-sounds-extension
   scopes:
     site: ["read", "write"]
