@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import {
+  Button,
+  ButtonGroup,
   Card,
   CardLoader,
   CardTitle,
@@ -69,6 +71,22 @@ export const SiteDeploy = () => {
     }
   }, [deployState]);
 
+  const handleClickFakeStart = () => {
+    if (shouldPlaySoundOnStart) {
+      playSound(SoundFile.Start);
+    }
+  };
+  const handleClickFakeSuccess = () => {
+    if (shouldPlaySoundOnSuccess) {
+      playSound(SoundFile.Success);
+    }
+  };
+  const handleClickFakeFailure = () => {
+    if (shouldPlaySoundOnFailure) {
+      playSound(SoundFile.Failure);
+    }
+  };
+
   if (
     deployStatusQuery.isLoading ||
     accountSettingsQuery.isLoading ||
@@ -105,8 +123,13 @@ export const SiteDeploy = () => {
         ) : null}
       </Card>
       <Card>
-        <CardTitle>Live data</CardTitle>
+        <CardTitle>DEBUGGING</CardTitle>
         <div>Current deploy state: {deployState}</div>
+        <ButtonGroup>
+          <Button onClick={handleClickFakeStart}>Fake a start event</Button>
+          <Button onClick={handleClickFakeSuccess}>Fake a success event</Button>
+          <Button onClick={handleClickFakeFailure}>Fake a failure event</Button>
+        </ButtonGroup>
       </Card>
     </SiteDeploySurface>
   );
