@@ -4,17 +4,15 @@ import {
   CardTitle,
   Checkbox,
   Form,
-  FormField,
-  FormFieldSecret,
   TeamConfigurationSurface,
 } from "@netlify/sdk/ui/react/components";
-import { useNetlifySDK } from "@netlify/sdk/ui/react";
+
 import { trpc } from "../trpc";
 import { teamSettingsSchema } from "../../schema/team-configuration";
-import logoImg from "../../assets/netlify-logo.png";
+import { defaultSettings } from "../../config";
+import { BrowserPermissions } from "../components/BrowserPermissions";
 
 export const TeamConfiguration = () => {
-  const sdk = useNetlifySDK();
   const trpcUtils = trpc.useUtils();
   const teamSettingsQuery = trpc.teamSettings.query.useQuery();
   const teamSettingsMutation = trpc.teamSettings.mutate.useMutation({
@@ -30,41 +28,30 @@ export const TeamConfiguration = () => {
   return (
     <TeamConfigurationSurface>
       <Card>
-        <img src={logoImg} />
-        <CardTitle>Example Section for {sdk.extension.name}</CardTitle>
+        <CardTitle>Permissions</CardTitle>
+        <BrowserPermissions />
+      </Card>
+      <Card>
+        <CardTitle>Configuration</CardTitle>
         <Form
-          defaultValues={
-            teamSettingsQuery.data ?? {
-              exampleString: "",
-              exampleSecret: "",
-              exampleBoolean: false,
-              exampleNumber: 123,
-            }
-          }
+          defaultValues={teamSettingsQuery.data ?? defaultSettings}
           schema={teamSettingsSchema}
           onSubmit={teamSettingsMutation.mutateAsync}
         >
-          <FormField
-            name="exampleString"
-            type="text"
-            label="Example String"
-            helpText="This is an example string"
-          />
-          <FormField
-            name="exampleNumber"
-            type="number"
-            label="Example Number"
-            helpText="This is an example number"
-          />
-          <FormFieldSecret
-            name="exampleSecret"
-            label="Example Secret"
-            helpText="This is an example secret"
+          <Checkbox
+            name="enableBuildStartSounds"
+            label="Build start"
+            helpText="Play a sound when a build starts"
           />
           <Checkbox
-            name="exampleBoolean"
-            label="Example Boolean"
-            helpText="This is an example boolean"
+            name="enableBuildSuccessSounds"
+            label="Build success"
+            helpText="Play a sound when a build succeeds"
+          />
+          <Checkbox
+            name="enableBuildFailureSounds"
+            label="Build failure"
+            helpText="Play a sound when a build fails"
           />
         </Form>
       </Card>

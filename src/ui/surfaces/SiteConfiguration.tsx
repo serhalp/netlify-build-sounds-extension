@@ -3,14 +3,25 @@ import {
   Card,
   CardLoader,
   CardTitle,
+  Checkbox,
+  Form,
   SiteConfigurationSurface,
 } from "@netlify/sdk/ui/react/components";
+
 import { trpc } from "../trpc";
-import { useNetlifySDK } from "@netlify/sdk/ui/react";
+import { siteSettingsSchema } from "../../schema/site-configuration.js";
+import { defaultSettings } from "../../config";
+import { BrowserPermissions } from "../components/BrowserPermissions.js";
 
 export const SiteConfiguration = () => {
-  const sdk = useNetlifySDK();
   const trpcUtils = trpc.useUtils();
+
+  const siteSettingsQuery = trpc.siteSettings.query.useQuery();
+  const siteSettingsMutation = trpc.siteSettings.mutate.useMutation({
+    onSuccess: async () => {
+      await trpcUtils.siteSettings.query.invalidate();
+    },
+  });
 
   const buildEventHandlerEnabledForSite =
     trpc.buildEventHandler.status.useQuery();
@@ -29,12 +40,19 @@ export const SiteConfiguration = () => {
       },
     });
 
-  if (buildEventHandlerEnabledForSite.isLoading) {
+  if (
+    buildEventHandlerEnabledForSite.isLoading ||
+    siteSettingsQuery.isLoading
+  ) {
     return <CardLoader />;
   }
 
   return (
     <SiteConfigurationSurface>
+      <Card>
+        <CardTitle>Permissions</CardTitle>
+        <BrowserPermissions />
+      </Card>
       <Card>
         {buildEventHandlerEnabledForSite.data?.enabled ? (
           <>
@@ -64,8 +82,34 @@ export const SiteConfiguration = () => {
       </Card>
       {buildEventHandlerEnabledForSite.data?.enabled && (
         <Card>
-          <CardTitle>Example Section for {sdk.extension.name}</CardTitle>
-          <p>This is an example site configuration.</p>
+          <CardTitle>Configuration</CardTitle>
+
+          <p>
+            These site configuration settings will override global extension
+            settings.
+          </p>
+
+          <Form
+            defaultValues={siteSettingsQuery.data ?? defaultSettings}
+            schema={siteSettingsSchema}
+            onSubmit={siteSettingsMutation.mutateAsync}
+          >
+            <Checkbox
+              name="enableBuildStartSounds"
+              label="Build start"
+              helpText="Play a sound when a build starts"
+            />
+            <Checkbox
+              name="enableBuildSuccessSounds"
+              label="Build success"
+              helpText="Play a sound when a build succeeds"
+            />
+            <Checkbox
+              name="enableBuildFailureSounds"
+              label="Build failure"
+              helpText="Play a sound when a build fails"
+            />
+          </Form>
         </Card>
       )}
     </SiteConfigurationSurface>

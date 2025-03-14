@@ -5,7 +5,7 @@ import { SurfaceRouter, SurfaceRoute } from "@netlify/sdk/ui/react/components";
 import { useState } from "react";
 import { SiteConfiguration } from "./surfaces/SiteConfiguration.jsx";
 import { TeamConfiguration } from "./surfaces/TeamConfiguration.jsx";
-
+import { SiteDeploy } from "./surfaces/SiteDeploySurface.jsx";
 
 import { trpc } from "./trpc.js";
 
@@ -34,8 +34,10 @@ export const App = () => {
           <SurfaceRoute surface={Surfaces.TeamConfiguration}>
             <TeamConfiguration />
           </SurfaceRoute>
-          
-          
+
+          <SurfaceRoute surface={Surfaces.SiteDeploy}>
+            <SiteDeploy />
+          </SurfaceRoute>
         </SurfaceRouter>
       </QueryClientProvider>
     </trpc.Provider>
