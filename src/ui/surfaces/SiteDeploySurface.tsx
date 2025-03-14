@@ -63,6 +63,10 @@ export const SiteDeploy = () => {
   return (
     <SiteDeploySurface>
       <Card>
+        <CardTitle>Permissions</CardTitle>
+        <BrowserPermissions />
+      </Card>
+      <Card>
         <CardTitle>Configuration</CardTitle>
         {shouldPlaySoundOnStart ? (
           <div>
