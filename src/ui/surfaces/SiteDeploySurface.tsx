@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardLoader,
@@ -11,6 +11,9 @@ import { useNetlifySDK } from "@netlify/sdk/ui/react";
 import { trpc } from "../trpc";
 import { defaultSettings, SoundFile } from "../../config";
 import { playSound } from "../lib/audio";
+import { BrowserPermissions } from "../components/BrowserPermissions";
+
+const POLL_INTERVAL_MS = 2000;
 
 export const SiteDeploy = () => {
   const {
@@ -41,8 +44,22 @@ export const SiteDeploy = () => {
     accountSettingsQuery.data?.enableBuildFailureSounds === true ||
     defaultSettings.enableBuildFailureSounds;
 
-  // TODO(serhalp) Somehow skip playing a sound on initial deploy state load, only on subsequent changes
+  const [hasRefetched, setHasRefetched] = useState(false);
+
   useEffect(() => {
+    const timerId = setInterval(async () => {
+      setHasRefetched(true);
+      deployStatusQuery.refetch({ cancelRefetch: false });
+    }, POLL_INTERVAL_MS);
+    return () => {
+      clearInterval(timerId);
+    };
+  }, []);
+
+  useEffect(() => {
+    // We don't want to play any sounds for the initial fetch, only for actual changes.
+    if (!hasRefetched) return;
+
     if (deployState === "started" && shouldPlaySoundOnStart) {
       playSound(SoundFile.Start);
     } else if (deployState === "success" && shouldPlaySoundOnSuccess) {
@@ -89,7 +106,7 @@ export const SiteDeploy = () => {
       </Card>
       <Card>
         <CardTitle>Live data</CardTitle>
-        <div>Current state: {deployState}</div>
+        <div>Current deploy state: {deployState}</div>
       </Card>
     </SiteDeploySurface>
   );
