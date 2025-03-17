@@ -5,7 +5,7 @@ export const defaultSettings = {
 };
 
 export enum SoundFile {
-  Start = "assets/start.m4a",
+  Start = "assets/start.ogg",
   // Success Jingle.ogg by TitanKaempfer -- https://freesound.org/s/689903/ -- License: Attribution 4.0
   Success = "assets/success.ogg",
   Failure = "assets/failure.wav",
