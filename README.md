@@ -1,4 +1,6 @@
-# Netlify Extension
+# Netlify Build Sounds Extension
+
+Netlify Extension that plays a sound on the Deploy page when the deploy starts and/or succeeds and/or fails. Configurable.
 
 This extension is created using the [Netlify SDK](https://sdk.netlify.com/get-started/introduction/). It is a boilerplate for creating a new extension.
 
@@ -13,7 +15,6 @@ This builds the extension into a `.ntli` folder. This is the folder that Netlify
 ```bash
 npm run build
 ```
-
 
 ## Publish
 
